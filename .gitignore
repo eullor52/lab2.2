@@ -1,0 +1,6 @@
+/ui
+/build
+/googletest
+/.qtcreator
+/.vs
+lab2_ui.pro
