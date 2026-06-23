@@ -29,7 +29,7 @@ public:
         bool operator!=(const Iterator& other) const {
             return !(*this == other);
         }
-    }
+    };
     DynamicArray() = default;
     DynamicArray(T* items, size_t count);
     DynamicArray(size_t size);

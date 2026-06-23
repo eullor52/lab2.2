@@ -236,3 +236,12 @@ template <typename T>
 typename Sequence<T>::Iterator ArraySequence<T>::end() const {
     return typename Sequence<T>::Iterator(new ArraySeqIterator(array->end()));
 }
+
+template <typename T, typename U>
+Sequence<U>* Map(const Sequence<T>& seq, U (*func)(T)) {
+    ArraySequence<U>* result = new ArraySequence<U>();
+    for (auto it = seq.begin(); it != seq.end(); ++it) {
+        result->Append(func(*it));
+    }
+    return result;
+}

@@ -47,13 +47,13 @@ protected:
     const char* list_data_str[4] = {"Alpha", "Beta", "Gamma", "Delta"};
     LinkedList<int>* linked_int;
     LinkedList<const char*>* linked_str;
-    ListSequence<int>* list_seq_int;
-    ListSequence<const char*>* list_seq_str;
+    MutableListSequence<int>* list_seq_int;
+    MutableListSequence<const char*>* list_seq_str;
     void SetUp() override {
         linked_int = new LinkedList<int>(list_data_int, 6);
         linked_str = new LinkedList<const char*>(list_data_str, 4);
-        list_seq_int = new ListSequence<int>(*linked_int);
-        list_seq_str = new ListSequence<const char*>(*linked_str);
+        list_seq_int = new MutableListSequence<int>(*linked_int);
+        list_seq_str = new MutableListSequence<const char*>(*linked_str);
     }
     void TearDown() override {
         delete linked_int;
@@ -67,21 +67,21 @@ class ArraySequenceFixture : public testing::Test {
 protected:
     int arr_data[4] = {132, 23, -56, 98};
     const char* arr_str[2] = {"Hello", "World"};
-    ArraySequence<int>* seq_int;
-    ArraySequence<const char*>* seq_str;
     ImmutableArraySequence<int>* immut_seq_int;
     ImmutableArraySequence<const char*>* immut_seq_str;
     MutableArraySequence<int>* mut_seq_int;
-    MutableArraySequence<const char*> mut_seq_str;
+    MutableArraySequence<const char*>* mut_seq_str;
     void SetUp() override {
-        seq_int = new ArraySequence<int>(arr_data, 4);
-        seq_str = new ArraySequence<const char*>(arr_str, 2);
+        mut_seq_str = new MutableArraySequence<const char*>(arr_str, 2);
+        immut_seq_str = new ImmutableArraySequence<const char*>(arr_str, 2);
         immut_seq_int = new ImmutableArraySequence<int>(arr_data, 4);
         mut_seq_int = new MutableArraySequence<int>(arr_data, 4);
     }
     void TearDown() override {
-        delete seq_int;
-        delete seq_str;
+        delete mut_seq_int;
+        delete mut_seq_str;
+        delete immut_seq_int;
+        delete immut_seq_str;
     }
 };
 
@@ -101,17 +101,17 @@ protected:
     }
 };
 
-class BitSequenceFixture : public testing::Test {
+class MutableBitSeqFixture : public testing::Test {
 protected:
-    Bit<uint8_t> bits_arr[5] = {
+    Bit<uint8_t> bits[5] = {
         Bit<uint8_t>(1), Bit<uint8_t>(0), Bit<uint8_t>(1),
         Bit<uint8_t>(1), Bit<uint8_t>(0)
     };
-    BitSequence<uint8_t>* bit_seq;
+    MutableBitSequence<uint8_t>* seq;
     void SetUp() override {
-        bit_seq = new BitSequence<uint8_t>(bits_arr, 5);
+        seq = new MutableBitSequence<uint8_t>(bits, 5);
     }
     void TearDown() override {
-        delete bit_seq;
+        delete seq;
     }
 };

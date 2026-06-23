@@ -59,13 +59,10 @@ public:
     Bit<T> Get(size_t index) const override;
     size_t GetLength() const override;
     BitSequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const override;
-    BitSequence<T>* Append(const Bit<T>& item) override;
-    BitSequence<T>* Append(Bit<T>&& item) override;
-    BitSequence<T>* Prepend(const Bit<T>& item) override;
-    BitSequence<T>* Prepend(Bit<T>&& item) override;
-    BitSequence<T>* InsertAt(const Bit<T>& item, size_t index) override;
-    BitSequence<T>* InsertAt(Bit<T>&& item, size_t index) override;
-    BitSequence<T>* Concat(const Sequence<Bit<T>>& list) override;
+    BitSequence<T>* Append(Bit<T> item) override;
+    BitSequence<T>* Prepend(Bit<T> item) override;
+    BitSequence<T>* InsertAt(Bit<T> item, size_t index) override;
+    BitSequence<T>* Concat(const Sequence<Bit<T>>& list) const override;
     BitSequence<T> operator&(const BitSequence<T>& operand) const;
     BitSequence<T> operator|(const BitSequence<T>& operand) const;
     BitSequence<T> operator^(const BitSequence<T>& operand) const;
@@ -243,49 +240,28 @@ BitSequence<T>* BitSequence<T>::GetSubsequence(size_t startIndex, size_t endInde
 }
 
 template <typename T>
-BitSequence<T>* BitSequence<T>::Append(const Bit<T>& item) {
+BitSequence<T>* BitSequence<T>::Append(Bit<T> item) {
     BitSequence<T>* result = this->Instance();
     result->AppendInternal(item);
     return result;
 }
 
 template <typename T>
-BitSequence<T>* BitSequence<T>::Append(Bit<T>&& item) {
-    BitSequence<T>* result = this->Instance();
-    result->AppendInternal(item);
-    return result;
-}
-
-template <typename T>
-BitSequence<T>* BitSequence<T>::Prepend(const Bit<T>& item) {
+BitSequence<T>* BitSequence<T>::Prepend(Bit<T> item) {
     BitSequence<T>* result = this->Instance();
     result->PrependInternal(item);
     return result;
 }
 
 template <typename T>
-BitSequence<T>* BitSequence<T>::Prepend(Bit<T>&& item) {
-    BitSequence<T>* result = this->Instance();
-    result->PrependInternal(item);
-    return result;
-}
-
-template <typename T>
-BitSequence<T>* BitSequence<T>::InsertAt(const Bit<T>& item, size_t index) {
+BitSequence<T>* BitSequence<T>::InsertAt(Bit<T> item, size_t index) {
     BitSequence<T>* result = this->Instance();
     result->InsertAtInternal(item, index);
     return result;
 }
 
 template <typename T>
-BitSequence<T>* BitSequence<T>::InsertAt(Bit<T>&& item, size_t index) {
-    BitSequence<T>* result = this->Instance();
-    result->InsertAtInternal(item, index);
-    return result;
-}
-
-template <typename T>
-BitSequence<T>* BitSequence<T>::Concat(const Sequence<Bit<T>>& list) {
+BitSequence<T>* BitSequence<T>::Concat(const Sequence<Bit<T>>& list) const {
     BitSequence<T>* result = this->Instance();
     result->ConcatInternal(&list);
     return result;

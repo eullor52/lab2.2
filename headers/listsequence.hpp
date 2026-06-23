@@ -179,6 +179,7 @@ protected:
     }
 public:
     using ListSequence<T>::ListSequence;
+    using ListSequence<T>::operator=;
 };
 
 template <typename T>
@@ -195,6 +196,7 @@ protected:
     }
 public:
     using ListSequence<T>::ListSequence;
+    using ListSequence<T>::operator=;
 };
 
 template <typename T>
@@ -205,4 +207,13 @@ typename Sequence<T>::Iterator ListSequence<T>::begin() const {
 template <typename T>
 typename Sequence<T>::Iterator ListSequence<T>::end() const {
     return typename Sequence<T>::Iterator(new ListSeqIterator(list->end()));
+}
+
+template <typename T, typename U>
+Sequence<U>* Map(const Sequence<T>& seq, U (*func)(T)) {
+    ListSequence<U>* result = new ListSequence<U>();
+    for (auto it = seq.begin(); it != seq.end(); ++it) {
+        result->Append(func(*it));
+    }
+    return result;
 }
