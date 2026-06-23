@@ -2,21 +2,6 @@
 #include <gtest/gtest.h>
 #include "../headers/bitsequence.hpp"
 
-class MutableBitSeqFixture : public testing::Test {
-protected:
-    Bit<uint8_t> bits[5] = {
-        Bit<uint8_t>(1), Bit<uint8_t>(0), Bit<uint8_t>(1),
-        Bit<uint8_t>(1), Bit<uint8_t>(0)
-    };
-    MutableBitSequence<uint8_t>* seq;
-    void SetUp() override {
-        seq = new MutableBitSequence<uint8_t>(bits, 5);
-    }
-    void TearDown() override {
-        delete seq;
-    }
-};
-
 TEST_F(MutableBitSeqFixture, default_constructor) {
     MutableBitSequence<uint8_t> s;
     EXPECT_EQ(s.GetLength(), 0);

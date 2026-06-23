@@ -32,11 +32,11 @@ protected:
             ++current;
             return *this;
         }
-        bool equals(const Sequence<T>::IteratorBase& other) const override {
+        bool equals(const typename Sequence<T>::IteratorBase& other) const override {
             const auto& o = dynamic_cast<const ArraySeqIterator&>(other);
             return current == o.current;
         }
-        Sequence<T>::IteratorBase* clone() const override {
+        typename Sequence<T>::IteratorBase* clone() const override {
             return new ArraySeqIterator(current);
         }
     };
@@ -55,7 +55,7 @@ public:
     ArraySequence<T>* Prepend(T item) override;
     ArraySequence<T>* InsertAt(T item, size_t index) override;
     Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const override;
-    Sequence<T>* Concat(const Sequence<T>& other) const override;
+    Sequence<T>* Concat(const Sequence<T>& other) override;
     typename Sequence<T>::Iterator begin() const override;
     typename Sequence<T>::Iterator end() const override;
 };
@@ -183,7 +183,7 @@ Sequence<T>* ArraySequence<T>::GetSubsequence(size_t startIndex, size_t endIndex
 }
 
 template <typename T>
-Sequence<T>* ArraySequence<T>::Concat(const Sequence<T>& other) const {
+Sequence<T>* ArraySequence<T>::Concat(const Sequence<T>& other) {
     ArraySequence<T>* result = this->EmptyClone();
     size_t newLen = GetLength() + other.GetLength();
     result->array->Resize(newLen);
@@ -209,6 +209,7 @@ protected:
     }
 public:
     using ArraySequence<T>::ArraySequence;
+    using ArraySequence<T>::operator=;
 };
 
 template <typename T>
@@ -224,7 +225,8 @@ protected:
         return this->Clone();
     }
 public:
-    using ArraySequence<T>::ArraySequence; 
+    using ArraySequence<T>::ArraySequence;
+    using ArraySequence<T>::operator=;
 };
 
 template <typename T>
@@ -238,7 +240,7 @@ typename Sequence<T>::Iterator ArraySequence<T>::end() const {
 }
 
 template <typename T, typename U>
-Sequence<U>* Map(const Sequence<T>& seq, U (*func)(T)) {
+ArraySequence<U>* Map(const ArraySequence<T>& seq, U (*func)(T)) {
     ArraySequence<U>* result = new ArraySequence<U>();
     for (auto it = seq.begin(); it != seq.end(); ++it) {
         result->Append(func(*it));

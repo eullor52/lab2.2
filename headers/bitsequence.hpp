@@ -62,7 +62,7 @@ public:
     BitSequence<T>* Append(Bit<T> item) override;
     BitSequence<T>* Prepend(Bit<T> item) override;
     BitSequence<T>* InsertAt(Bit<T> item, size_t index) override;
-    BitSequence<T>* Concat(const Sequence<Bit<T>>& list) const override;
+    BitSequence<T>* Concat(const Sequence<Bit<T>>& list) override;
     BitSequence<T> operator&(const BitSequence<T>& operand) const;
     BitSequence<T> operator|(const BitSequence<T>& operand) const;
     BitSequence<T> operator^(const BitSequence<T>& operand) const;
@@ -261,7 +261,7 @@ BitSequence<T>* BitSequence<T>::InsertAt(Bit<T> item, size_t index) {
 }
 
 template <typename T>
-BitSequence<T>* BitSequence<T>::Concat(const Sequence<Bit<T>>& list) const {
+BitSequence<T>* BitSequence<T>::Concat(const Sequence<Bit<T>>& list) {
     BitSequence<T>* result = this->Instance();
     result->ConcatInternal(&list);
     return result;

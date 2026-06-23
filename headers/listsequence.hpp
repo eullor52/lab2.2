@@ -30,11 +30,11 @@ protected:
             ++current;
             return *this;
         }
-        bool equals(const Sequence<T>::IteratorBase& other) const override {
+        bool equals(const typename Sequence<T>::IteratorBase& other) const override {
             const auto& o = dynamic_cast<const ListSeqIterator&>(other);
             return current == o.current;
         }
-        Sequence<T>::IteratorBase* clone() const override {
+        typename Sequence<T>::IteratorBase* clone() const override {
             return new ListSeqIterator(current);
         }
     };
@@ -53,7 +53,7 @@ public:
     ListSequence<T>* Prepend(T item) override;
     ListSequence<T>* InsertAt(T item, size_t index) override;
     Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const override;
-    Sequence<T>* Concat(const Sequence<T>& other) const override;
+    Sequence<T>* Concat(const Sequence<T>& other) override;
     typename Sequence<T>::Iterator begin() const override;
     typename Sequence<T>::Iterator end() const override;
 };
@@ -154,7 +154,7 @@ Sequence<T>* ListSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex)
 }
 
 template <typename T>
-Sequence<T>* ListSequence<T>::Concat(const Sequence<T>& other) const {
+Sequence<T>* ListSequence<T>::Concat(const Sequence<T>& other) {
     ListSequence<T>* result = this->EmptyClone();
     size_t myLen = this->GetLength();
     for (size_t i = 0; i < myLen; ++i)
@@ -210,8 +210,8 @@ typename Sequence<T>::Iterator ListSequence<T>::end() const {
 }
 
 template <typename T, typename U>
-Sequence<U>* Map(const Sequence<T>& seq, U (*func)(T)) {
-    ListSequence<U>* result = new ListSequence<U>();
+ListSequence<U>* Map(const ListSequence<T>& seq, U (*func)(T)) {
+    ListSequence<U>* result = new MutableListSequence<U>();
     for (auto it = seq.begin(); it != seq.end(); ++it) {
         result->Append(func(*it));
     }

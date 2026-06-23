@@ -19,7 +19,7 @@ public:
         T operator*() const {
             return *current;
         }
-        Iterator operator++() {
+        Iterator& operator++() {
             ++current;
             return *this;
         }
@@ -147,11 +147,11 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& other) {
 }
 
 template <typename T>
-DynamicArray<T>::Iterator DynamicArray<T>::begin() const {
+typename DynamicArray<T>::Iterator DynamicArray<T>::begin() const {
     return Iterator(data);
 }
 
 template <typename T>
-DynamicArray<T>::Iterator DynamicArray<T>::end() const {
+typename DynamicArray<T>::Iterator DynamicArray<T>::end() const {
     return Iterator(nullptr);
 }
