@@ -241,7 +241,7 @@ typename Sequence<T>::Iterator ArraySequence<T>::end() const {
 
 template <typename T, typename U>
 ArraySequence<U>* Map(const ArraySequence<T>& seq, U (*func)(T)) {
-    ArraySequence<U>* result = new ArraySequence<U>();
+    ArraySequence<U>* result = new MutableArraySequence<U>();
     for (auto it = seq.begin(); it != seq.end(); ++it) {
         result->Append(func(*it));
     }
