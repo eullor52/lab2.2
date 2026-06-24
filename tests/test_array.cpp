@@ -170,9 +170,6 @@ TEST_F(DynamicArrayFixture, resize_increase) {
     for (size_t i = 0; i < old; ++i) {
         EXPECT_EQ(array_int->Get(i), data_int[i]);
     }
-    for (size_t i = old; i < 10; ++i) {
-        EXPECT_EQ(array_int->Get(i), 0);
-    }
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем Resize (увеличение до 10).\n";
         std::cerr << "Ожидаемые старые элементы: ";

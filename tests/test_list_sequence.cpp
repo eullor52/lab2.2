@@ -301,9 +301,8 @@ TEST_F(ListSequenceFixture, iterator_empty) {
 }
 
 TEST_F(ListSequenceFixture, immutable_append) {
-    ImmutableListSequence<int> immut;
-    immut.Append(1);
-    immut.Append(2);
+    int data[2] = {1, 2};
+    ImmutableListSequence<int> immut(data, 2);
     Sequence<int>* newSeq = immut.Append(3);
     EXPECT_EQ(immut.GetLength(), 2);
     EXPECT_EQ(newSeq->GetLength(), 3);
@@ -319,8 +318,8 @@ TEST_F(ListSequenceFixture, immutable_append) {
 }
 
 TEST_F(ListSequenceFixture, immutable_prepend) {
-    ImmutableListSequence<int> immut;
-    immut.Append(2);
+    int data = 2;
+    ImmutableListSequence<int> immut(&data, 1);
     Sequence<int>* newSeq = immut.Prepend(1);
     EXPECT_EQ(immut.GetLength(), 1);
     EXPECT_EQ(newSeq->GetLength(), 2);
@@ -335,9 +334,8 @@ TEST_F(ListSequenceFixture, immutable_prepend) {
 }
 
 TEST_F(ListSequenceFixture, immutable_insert_at) {
-    ImmutableListSequence<int> immut;
-    immut.Append(1);
-    immut.Append(3);
+    int data[2] = {1, 3};
+    ImmutableListSequence<int> immut(data, 2);
     Sequence<int>* newSeq = immut.InsertAt(2, 1);
     EXPECT_EQ(immut.GetLength(), 2);
     EXPECT_EQ(newSeq->GetLength(), 3);

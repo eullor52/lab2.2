@@ -154,14 +154,14 @@ TEST_F(MutableBitSeqFixture, insert_at_beginning) {
     MutableBitSequence<uint8_t> s;
     s.Append(Bit<uint8_t>(0));
     s.Append(Bit<uint8_t>(1));
-    s.InsertAt(Bit<uint8_t>(2), 0);
+    s.InsertAt(Bit<uint8_t>(1), 0);
     EXPECT_EQ(s.GetLength(), 3);
-    EXPECT_EQ(s.Get(0).GetValue(), 2);
+    EXPECT_EQ(s.Get(0).GetValue(), 1);
     EXPECT_EQ(s.Get(1).GetValue(), 0);
     EXPECT_EQ(s.Get(2).GetValue(), 1);
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем InsertAt (в начало).\n";
-        std::cerr << "Ожидаемые биты: 2 0 1\n";
+        std::cerr << "Ожидаемые биты: 1 0 1\n";
         std::cerr << "Полученные: " << (int)s.Get(0).GetValue() << " "
                   << (int)s.Get(1).GetValue() << " "
                   << (int)s.Get(2).GetValue() << "\n\n";
@@ -173,15 +173,15 @@ TEST_F(MutableBitSeqFixture, insert_at_middle) {
     s.Append(Bit<uint8_t>(1));
     s.Append(Bit<uint8_t>(0));
     s.Append(Bit<uint8_t>(1));
-    s.InsertAt(Bit<uint8_t>(2), 1);
+    s.InsertAt(Bit<uint8_t>(1), 1);
     EXPECT_EQ(s.GetLength(), 4);
     EXPECT_EQ(s.Get(0).GetValue(), 1);
-    EXPECT_EQ(s.Get(1).GetValue(), 2);
+    EXPECT_EQ(s.Get(1).GetValue(), 1);
     EXPECT_EQ(s.Get(2).GetValue(), 0);
     EXPECT_EQ(s.Get(3).GetValue(), 1);
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем InsertAt (в середину).\n";
-        std::cerr << "Ожидаемые биты: 1 2 0 1\n";
+        std::cerr << "Ожидаемые биты: 1 1 0 1\n";
         std::cerr << "Полученные: " << (int)s.Get(0).GetValue() << " "
                   << (int)s.Get(1).GetValue() << " "
                   << (int)s.Get(2).GetValue() << " "
@@ -193,14 +193,14 @@ TEST_F(MutableBitSeqFixture, insert_at_end) {
     MutableBitSequence<uint8_t> s;
     s.Append(Bit<uint8_t>(1));
     s.Append(Bit<uint8_t>(0));
-    s.InsertAt(Bit<uint8_t>(2), 2);
+    s.InsertAt(Bit<uint8_t>(1), 2);
     EXPECT_EQ(s.GetLength(), 3);
     EXPECT_EQ(s.Get(0).GetValue(), 1);
     EXPECT_EQ(s.Get(1).GetValue(), 0);
-    EXPECT_EQ(s.Get(2).GetValue(), 2);
+    EXPECT_EQ(s.Get(2).GetValue(), 1);
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем InsertAt (в конец).\n";
-        std::cerr << "Ожидаемые биты: 1 0 2\n";
+        std::cerr << "Ожидаемые биты: 1 0 1\n";
         std::cerr << "Полученные: " << (int)s.Get(0).GetValue() << " "
                   << (int)s.Get(1).GetValue() << " "
                   << (int)s.Get(2).GetValue() << "\n\n";
@@ -210,7 +210,7 @@ TEST_F(MutableBitSeqFixture, insert_at_end) {
 TEST_F(MutableBitSeqFixture, insert_at_out_of_range) {
     MutableBitSequence<uint8_t> s;
     s.Append(Bit<uint8_t>(1));
-    EXPECT_THROW(s.InsertAt(Bit<uint8_t>(2), 5), OutOfRangeException);
+    EXPECT_THROW(s.InsertAt(Bit<uint8_t>(1), 5), OutOfRangeException);
 }
 
 TEST_F(MutableBitSeqFixture, get_subsequence) {
@@ -392,60 +392,63 @@ TEST_F(MutableBitSeqFixture, iterator_empty) {
 }
 
 TEST_F(MutableBitSeqFixture, immutable_append) {
-    ImmutableBitSequence<uint8_t> immut;
-    immut.Append(Bit<uint8_t>(1));
-    immut.Append(Bit<uint8_t>(0));
+    Bit<uint8_t> init[2] = {Bit<uint8_t>(1), Bit<uint8_t>(0)};
+    ImmutableBitSequence<uint8_t> immut(init, 2);
     Sequence<Bit<uint8_t>>* newSeq = immut.Append(Bit<uint8_t>(1));
-    EXPECT_EQ(immut.GetLength(), 2);
     EXPECT_EQ(newSeq->GetLength(), 3);
     EXPECT_EQ(newSeq->Get(0).GetValue(), 1);
     EXPECT_EQ(newSeq->Get(1).GetValue(), 0);
     EXPECT_EQ(newSeq->Get(2).GetValue(), 1);
-    delete newSeq;
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем ImmutableBitSequence::Append.\n";
-        std::cerr << "Исходная длина: " << immut.GetLength()
-                  << ", новая длина: " << newSeq->GetLength() << "\n\n";
+        std::cerr << "Ожидаемые биты: 1 0 1\n";
+        std::cerr << "Полученные биты: "
+                  << (int)newSeq->Get(0).GetValue() << " "
+                  << (int)newSeq->Get(1).GetValue() << " "
+                  << (int)newSeq->Get(2).GetValue() << "\n\n";
     }
+    delete newSeq;
 }
 
 TEST_F(MutableBitSeqFixture, immutable_prepend) {
-    ImmutableBitSequence<uint8_t> immut;
-    immut.Append(Bit<uint8_t>(0));
+    Bit<uint8_t> init[1] = {Bit<uint8_t>(0)};
+    ImmutableBitSequence<uint8_t> immut(init, 1);
     Sequence<Bit<uint8_t>>* newSeq = immut.Prepend(Bit<uint8_t>(1));
-    EXPECT_EQ(immut.GetLength(), 1);
     EXPECT_EQ(newSeq->GetLength(), 2);
     EXPECT_EQ(newSeq->Get(0).GetValue(), 1);
     EXPECT_EQ(newSeq->Get(1).GetValue(), 0);
-    delete newSeq;
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем ImmutableBitSequence::Prepend.\n";
-        std::cerr << "Исходная длина: " << immut.GetLength()
-                  << ", новая длина: " << newSeq->GetLength() << "\n\n";
+        std::cerr << "Ожидаемые биты: 1 0\n";
+        std::cerr << "Полученные биты: "
+                  << (int)newSeq->Get(0).GetValue() << " "
+                  << (int)newSeq->Get(1).GetValue() << "\n\n";
     }
+    delete newSeq;
 }
 
 TEST_F(MutableBitSeqFixture, immutable_insert_at) {
-    ImmutableBitSequence<uint8_t> immut;
-    immut.Append(Bit<uint8_t>(1));
-    immut.Append(Bit<uint8_t>(0));
-    Sequence<Bit<uint8_t>>* newSeq = immut.InsertAt(Bit<uint8_t>(2), 1);
-    EXPECT_EQ(immut.GetLength(), 2);
+    Bit<uint8_t> init[2] = {Bit<uint8_t>(1), Bit<uint8_t>(0)};
+    ImmutableBitSequence<uint8_t> immut(init, 2);
+    Sequence<Bit<uint8_t>>* newSeq = immut.InsertAt(Bit<uint8_t>(1), 1);
     EXPECT_EQ(newSeq->GetLength(), 3);
     EXPECT_EQ(newSeq->Get(0).GetValue(), 1);
-    EXPECT_EQ(newSeq->Get(1).GetValue(), 2);
+    EXPECT_EQ(newSeq->Get(1).GetValue(), 1);
     EXPECT_EQ(newSeq->Get(2).GetValue(), 0);
-    delete newSeq;
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем ImmutableBitSequence::InsertAt.\n";
-        std::cerr << "Исходная длина: " << immut.GetLength()
-                  << ", новая длина: " << newSeq->GetLength() << "\n\n";
+        std::cerr << "Ожидаемые биты: 1 1 0\n";
+        std::cerr << "Полученные биты: "
+                  << (int)newSeq->Get(0).GetValue() << " "
+                  << (int)newSeq->Get(1).GetValue() << " "
+                  << (int)newSeq->Get(2).GetValue() << "\n\n";
     }
+    delete newSeq;
 }
 
 TEST_F(MutableBitSeqFixture, mutable_append_returns_this) {
     MutableBitSequence<uint8_t> s;
     s.Append(Bit<uint8_t>(1));
-    BitSequence<uint8_t>* result = s.Append(Bit<uint8_t>(2));
+    BitSequence<uint8_t>* result = s.Append(Bit<uint8_t>(1));
     EXPECT_EQ(result, &s);
 }

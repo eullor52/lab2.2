@@ -147,6 +147,9 @@ ListSequence<T>* ListSequence<T>::InsertAt(T item, size_t index) {
 
 template <typename T>
 Sequence<T>* ListSequence<T>::GetSubsequence(size_t startIndex, size_t endIndex) const {
+    size_t len = this->GetLength();
+    if (startIndex > endIndex || startIndex >= len || endIndex > len)
+        throw OutOfRangeException("GetSubsequence: invalid indices");
     ListSequence<T>* result = this->EmptyClone();
     for (size_t i = startIndex; i <= endIndex; ++i)
         result->Append(this->Get(i));

@@ -93,12 +93,12 @@ TEST_F(BitFixture, proxy_assignment) {
     Bit<uint8_t> b(0b10100000);
     auto proxy1 = b[5];
     auto proxy2 = b[3];
-    proxy1 = proxy2;  // копируем бит 3 в бит 5
+    proxy1 = proxy2;
     EXPECT_EQ(static_cast<bool>(b[5]), static_cast<bool>(b[3]));
-    EXPECT_EQ(b.GetValue(), 0b10101000);
+    EXPECT_EQ(b.GetValue(), 0b10000000);
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем присваивание BitProxy друг другу.\n";
-        std::cerr << "Ожидаемое значение после proxy1 = proxy2: 168 (0b10101000), получено: "
+        std::cerr << "Ожидаемое значение после proxy1 = proxy2: 128 (0b10000000), получено: "
                   << (int)b.GetValue() << "\n\n";
     }
 }

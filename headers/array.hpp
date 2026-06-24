@@ -153,5 +153,5 @@ typename DynamicArray<T>::Iterator DynamicArray<T>::begin() const {
 
 template <typename T>
 typename DynamicArray<T>::Iterator DynamicArray<T>::end() const {
-    return Iterator(nullptr);
+    return Iterator(data + length);
 }
