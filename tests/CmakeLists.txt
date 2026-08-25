@@ -5,7 +5,7 @@
 # CMAKE_PREFIX_PATH с путём до каталога, содержащего GTestConfig.cmake.
 # Например: -DCMAKE_PREFIX_PATH=C:/googletest/install
 # или установите переменную GTEST_ROOT:
-set(GTEST_ROOT "C:/googletest/install" CACHE PATH "Path to googletest install")
+set(GTest_ROOT "C:/googletest/install" CACHE PATH "Path to googletest install")
 find_package(GTest REQUIRED)
 
 # Создание исполняемого файла тестов
