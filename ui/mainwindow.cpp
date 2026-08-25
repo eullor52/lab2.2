@@ -12,7 +12,6 @@
 #include <QRegularExpression>
 #include <type_traits>
 
-// --- Вспомогательные функции ---
 template <typename T>
 T double_val(T x) { return x * static_cast<T>(2); }
 
@@ -22,7 +21,6 @@ bool is_big(T x) { return x > static_cast<T>(60); }
 template <typename T>
 T sum_func(T acc, T x) { return acc + x; }
 
-// Парсинг строки в число
 template <typename T>
 T MainWindow::parseVal(const QString& str) {
     if constexpr (std::is_same_v<T, int>)
@@ -31,7 +29,6 @@ T MainWindow::parseVal(const QString& str) {
         return str.toDouble();
 }
 
-// Создание последовательности из строки (шаблон по контейнеру)
 template <typename T, template <typename> class Container>
 Container<T>* MainWindow::createSeq(const QString& str) {
     auto* seq = new Container<T>();
@@ -43,7 +40,6 @@ Container<T>* MainWindow::createSeq(const QString& str) {
     return seq;
 }
 
-// Создание битовой последовательности
 template <typename T>
 BitSequence<T>* MainWindow::createBitSeq(const QString& str) {
     auto* seq = new MutableBitSequence<T>();
@@ -57,7 +53,6 @@ BitSequence<T>* MainWindow::createBitSeq(const QString& str) {
     return seq;
 }
 
-// Форматирование обычной последовательности
 template <typename T>
 QString MainWindow::formatSeq(const Sequence<T>* seq) const {
     QStringList lst;
@@ -70,7 +65,6 @@ QString MainWindow::formatSeq(const Sequence<T>* seq) const {
     return lst.join(" ");
 }
 
-// Форматирование битовой последовательности
 template <typename T>
 QString MainWindow::formatBitSeq(const BitSequence<T>* seq) const {
     QStringList lst;
@@ -80,7 +74,6 @@ QString MainWindow::formatBitSeq(const BitSequence<T>* seq) const {
     return lst.join(" ");
 }
 
-// --- Конструктор ---
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle(APP_TITLE);
     setMinimumSize(600, 400);
@@ -149,7 +142,6 @@ QString MainWindow::mainStyle() {
 }
 
 void MainWindow::setupOperationsTab() {
-    // Группа настроек
     groupSettings = new QGroupBox(TEXT_SETTINGS);
     QFormLayout *setLay = new QFormLayout(groupSettings);
     comboDataType = new QComboBox();
@@ -162,7 +154,6 @@ void MainWindow::setupOperationsTab() {
     setLay->addRow(TEXT_OPERATION, comboOperation);
     mainLayout->addWidget(groupSettings);
 
-    // Последовательность A
     groupSeqA = new QGroupBox(TEXT_SEQ_A);
     QVBoxLayout *aLay = new QVBoxLayout(groupSeqA);
     lineSeqA = new QLineEdit();
@@ -170,7 +161,6 @@ void MainWindow::setupOperationsTab() {
     aLay->addWidget(lineSeqA);
     mainLayout->addWidget(groupSeqA);
 
-    // Последовательность B
     groupSeqB = new QGroupBox(TEXT_SEQ_B);
     QVBoxLayout *bLay = new QVBoxLayout(groupSeqB);
     lineSeqB = new QLineEdit();
@@ -178,7 +168,6 @@ void MainWindow::setupOperationsTab() {
     bLay->addWidget(lineSeqB);
     mainLayout->addWidget(groupSeqB);
 
-    // Аргументы
     groupArgs = new QGroupBox(TEXT_ARGS);
     QFormLayout *argsLay = new QFormLayout(groupArgs);
     labelValue = new QLabel(TEXT_VALUE);
@@ -195,11 +184,9 @@ void MainWindow::setupOperationsTab() {
     argsLay->addRow(labelEnd, lineEnd);
     mainLayout->addWidget(groupArgs);
 
-    // Кнопка
     btnRun = new QPushButton(TEXT_RUN);
     mainLayout->addWidget(btnRun);
 
-    // Результат
     groupResult = new QGroupBox(TEXT_GROUP_RESULT);
     QVBoxLayout *resLay = new QVBoxLayout(groupResult);
     textResult = new QTextEdit();
@@ -207,7 +194,6 @@ void MainWindow::setupOperationsTab() {
     resLay->addWidget(textResult);
     mainLayout->addWidget(groupResult);
 
-    // Сигналы
     connect(comboContainer, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onContainerChanged);
     connect(comboOperation, QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -270,7 +256,6 @@ void MainWindow::onOperationChanged() {
     textResult->clear();
 }
 
-// --- Выполнение операций для обычных последовательностей (шаблонная версия) ---
 template <typename T, template <typename> class Container>
 void MainWindow::executeStandard() {
     Container<T>* seqA = createSeq<T, Container>(lineSeqA->text());
@@ -280,38 +265,38 @@ void MainWindow::executeStandard() {
     bool updateA = false;
 
     switch (op) {
-    case 0: // GetFirst
+    case 0:
         res = QString::number(seqA->GetFirst());
         break;
-    case 1: // GetLast
+    case 1:
         res = QString::number(seqA->GetLast());
         break;
-    case 2: // Get(index)
+    case 2:
         res = QString::number(seqA->Get(lineIndex->text().toULongLong()));
         break;
-    case 3: // GetLength
+    case 3:
         res = QString::number(seqA->GetLength());
         break;
-    case 4: { // GetSubsequence
+    case 4: {
         auto* sub = seqA->GetSubsequence(lineStart->text().toULongLong(),
                                          lineEnd->text().toULongLong());
         res = formatSeq<T>(sub);
         delete sub;
         break;
     }
-    case 5: // Append
+    case 5:
         seqA->Append(parseVal<T>(lineValue->text()));
         updateA = true;
         break;
-    case 6: // Prepend
+    case 6:
         seqA->Prepend(parseVal<T>(lineValue->text()));
         updateA = true;
         break;
-    case 7: // InsertAt
+    case 7:
         seqA->InsertAt(parseVal<T>(lineValue->text()), lineIndex->text().toULongLong());
         updateA = true;
         break;
-    case 8: { // Concat
+    case 8: {
         Container<T>* seqB = createSeq<T, Container>(lineSeqB->text());
         Sequence<T>* concatenated = seqA->Concat(*seqB);
         delete seqB;
@@ -320,13 +305,13 @@ void MainWindow::executeStandard() {
         delete concatenated;
         break;
     }
-    case 14: { // Map
+    case 14: {
         auto* mapped = Map<T>(*seqA, double_val<T>);
         res = formatSeq<T>(mapped);
         delete mapped;
         break;
     }
-    case 15: { // Reduce
+    case 15: {
         T val = Reduce<T, T>(*seqA, sum_func<T>, static_cast<T>(0));
         if constexpr (std::is_same_v<T, double>)
             res = QString::number(val, 'f', 4);
@@ -334,7 +319,7 @@ void MainWindow::executeStandard() {
             res = QString::number(val);
         break;
     }
-    case 16: { // Where
+    case 16: {
         auto* filtered = Where<T>(*seqA, is_big<T>);
         res = formatSeq<T>(filtered);
         delete filtered;
@@ -354,7 +339,6 @@ void MainWindow::executeStandard() {
     delete seqA;
 }
 
-// --- Выполнение операций для битовых последовательностей ---
 void MainWindow::executeBit(int op) {
     BitSequence<int>* seqA = createBitSeq<int>(lineSeqA->text());
     QString res;
@@ -451,7 +435,6 @@ void MainWindow::executeBit(int op) {
     delete seqA;
 }
 
-// --- Запуск операции ---
 void MainWindow::onRun() {
     try {
         QString container = comboContainer->currentText();

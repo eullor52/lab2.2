@@ -1,14 +1,6 @@
-# tests/CMakeLists.txt
-
-# Поиск googletest (GTest)
-# Если googletest установлен не в стандартное место, добавьте в CMakeCache переменную
-# CMAKE_PREFIX_PATH с путём до каталога, содержащего GTestConfig.cmake.
-# Например: -DCMAKE_PREFIX_PATH=C:/googletest/install
-# или установите переменную GTEST_ROOT:
 set(GTest_ROOT "C:/googletest/install" CACHE PATH "Path to googletest install")
 find_package(GTest REQUIRED)
 
-# Создание исполняемого файла тестов
 add_executable(run_tests
     test_array_sequence.cpp
     test_array.cpp
@@ -19,16 +11,13 @@ add_executable(run_tests
     test_main.cpp
 )
 
-# Подключаем каталог с тестами (если там есть собственные заголовки)
 target_include_directories(run_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Линкуем с основной библиотекой проекта (project_core) и GTest
 target_link_libraries(run_tests PRIVATE
     project_core
     GTest::gtest
     GTest::gtest_main
 )
 
-# Включаем поддержку GoogleTest для обнаружения тестов
 include(GoogleTest)
 gtest_discover_tests(run_tests)

@@ -26,29 +26,19 @@ private:
     void setupOperationsTab();
     void updateOperations();
     QString mainStyle();
-
-    // Шаблонные методы выполнения операций (без аргументов, контейнер задаётся шаблонным параметром)
     template <typename T, template <typename> class Container>
     void executeStandard();
-
     void executeBit(int op);
-
-    // Создание последовательности из строки
     template <typename T, template <typename> class Container>
     Container<T>* createSeq(const QString& str);
-
     template <typename T>
     BitSequence<T>* createBitSeq(const QString& str);
-
-    // Форматирование
     template <typename T>
     QString formatSeq(const Sequence<T>* seq) const;
     template <typename T>
     QString formatBitSeq(const BitSequence<T>* seq) const;
     template <typename T>
     T parseVal(const QString& str);
-
-    // UI-компоненты
     QVBoxLayout *mainLayout;
     QGroupBox *groupSettings, *groupSeqA, *groupSeqB, *groupArgs, *groupResult;
     QComboBox *comboDataType, *comboContainer, *comboOperation;
