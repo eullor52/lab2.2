@@ -19,7 +19,7 @@ protected:
     void PrependInternal(T item);
     void InsertAtInternal(T item, size_t index);
 
-    class ArraySeqIterator : public Sequence<T>::IteratorBase {
+    class ArraySeqIterator : public Sequence<T>::IEnumerator {
     private:
         typename DynamicArray<T>::Iterator current;
     public:
@@ -32,11 +32,12 @@ protected:
             ++current;
             return *this;
         }
-        bool equals(const typename Sequence<T>::IteratorBase& other) const override {
-            const auto& o = dynamic_cast<const ArraySeqIterator&>(other);
-            return current == o.current;
+        bool equals(const typename Sequence<T>::IEnumerator& other) const override {
+            const auto* o = dynamic_cast<const ArraySeqIterator*>(&other);
+            if (!o) return false;
+            return current == o->current;
         }
-        typename Sequence<T>::IteratorBase* clone() const override {
+        typename Sequence<T>::IEnumerator* clone() const override {
             return new ArraySeqIterator(current);
         }
     };

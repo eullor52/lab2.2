@@ -70,9 +70,7 @@ BitProxy<T>::operator bool() const {
 template <typename T>
 void Bit<T>::CheckIndex(size_t idx) const {
     if (idx >= sizeof(T) * 8) {
-        throw OutOfRangeException(
-            std::format("Index out of range (index: {}, max: {})",
-                        idx, sizeof(T) * 8 - 1));
+        throw OutOfRangeException("Index out of range");
     }
 }
 

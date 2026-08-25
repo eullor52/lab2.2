@@ -6,21 +6,21 @@
 template <typename T>
 class Sequence {
 public:
-    class IteratorBase {
+    class IEnumerator {
     public:
-        virtual ~IteratorBase() = default;
+        virtual ~IEnumerator() = default;
         virtual T operator*() const = 0;
-        virtual IteratorBase& operator++() = 0;
-        virtual bool equals(const IteratorBase& other) const = 0;
-        virtual IteratorBase* clone() const = 0;
+        virtual IEnumerator& operator++() = 0;
+        virtual bool equals(const IEnumerator& other) const = 0;
+        virtual IEnumerator* clone() const = 0;
     };
 
     class Iterator {
     private:
-        std::unique_ptr<IteratorBase> impl;
+        std::unique_ptr<IEnumerator> impl;
     public:
         Iterator() = default;
-        explicit Iterator(IteratorBase* p) : impl(p) {}
+        explicit Iterator(IEnumerator* p) : impl(p) {}
         Iterator(const Iterator& other)
             : impl(other.impl ? other.impl->clone() : nullptr) {}
         Iterator& operator=(const Iterator& other) {

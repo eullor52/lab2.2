@@ -1,28 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 project(lab2)
 
+# Общие настройки C++
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(googletest)
+# Включаем тестирование (нужно для ctest и gtest_discover_tests)
 enable_testing()
 
+# Библиотека с заголовками, которую используют и UI, и тесты
 add_library(project_core INTERFACE)
-target_include_directories(project_core INTERFACE headers)
+target_include_directories(project_core INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/headers)
 
-add_executable(run_tests
-    tests/test_array_sequence.cpp
-    tests/test_array.cpp
-    tests/test_list.cpp
-    tests/test_list_sequence.cpp
-    tests/test_bit.cpp
-    tests/test_bit_sequence.cpp
-    tests/test_main.cpp
-)
-
-target_include_directories(run_tests PRIVATE tests)
-
-target_link_libraries(run_tests PRIVATE project_core gtest gtest_main)
-
-include(GoogleTest)
-gtest_discover_tests(run_tests)
+# Добавляем подпроекты
+add_subdirectory(ui)      # Исполняемый файл UI (Windows GUI)
+add_subdirectory(tests)   # Модульные тесты

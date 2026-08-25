@@ -4,7 +4,6 @@
 #include "bit.hpp"
 #include "array.hpp"
 #include <stdexcept>
-#include <format>
 #include <cstddef>
 #include <utility>
 
@@ -26,7 +25,7 @@ protected:
     void PrependInternal(const Bit<T>& item);
     void InsertAtInternal(const Bit<T>& item, size_t index);
     void ConcatInternal(const Sequence<Bit<T>>* list);
-    class BitSeqIterator : public Sequence<Bit<T>>::IteratorBase {
+    class BitSeqIterator : public Sequence<Bit<T>>::IEnumerator {
     private:
         const BitSequence<T>* seq;
         size_t index;
@@ -40,11 +39,12 @@ protected:
             ++index;
             return *this;
         }
-        bool equals(const Sequence<Bit<T>>::IteratorBase& other) const override {
-            const auto& o = dynamic_cast<const BitSeqIterator&>(other);
-            return seq == o.seq && index == o.index;
+        bool equals(const typename Sequence<Bit<T>>::IEnumerator& other) const override {
+            const auto* o = dynamic_cast<const BitSeqIterator*>(&other);
+            if (!o) return false;
+            return seq == o->seq && index == o->index;
         }
-        Sequence<Bit<T>>::IteratorBase* clone() const override {
+        typename Sequence<Bit<T>>::IEnumerator* clone() const override {
             return new BitSeqIterator(seq, index);
         }
     };
@@ -140,7 +140,7 @@ void BitSequence<T>::PrependInternal(const Bit<T>& item) {
 template <typename T>
 void BitSequence<T>::InsertAtInternal(const Bit<T>& item, size_t index) {
     if (index > length_bits) {
-        throw OutOfRangeException(std::format("InsertAtInternal: index {} out of range (max {})", index, length_bits));
+        throw OutOfRangeException("Index out of range");
     }
     if (index == length_bits) {
         AppendInternal(item);
