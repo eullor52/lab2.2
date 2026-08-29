@@ -13,7 +13,6 @@ set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
     mainwindow.h
-    mainwindow.ui
 )
 
 add_executable(ui WIN32 ${PROJECT_SOURCES})

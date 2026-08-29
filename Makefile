@@ -23,13 +23,13 @@ tests: $(BUILD_DIR)/CMakeCache.txt
 	cmake --build $(BUILD_DIR) --target run_tests
 
 run_tests: tests
-	cd $(BUILD_DIR) && GTEST_BRIEF=1 ctest --output-on-failure
+	cd $(BUILD_DIR) &&  ctest --output-on-failure GTEST_BRIEF=1
 
 run_ui: ui
 	./$(BUILD_DIR)/$(UI_BUILD_DIR)/ui.exe
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rd /s /q $(BUILD_DIR)
 
 .DEFAULT_GOAL := all
 
