@@ -198,13 +198,14 @@ TEST_F(ArraySeqFixture, insert_at_out_of_range) {
 
 TEST_F(ArraySeqFixture, get_subsequence) {
     Sequence<int>* sub = seq_int->GetSubsequence(1, 3);
-    EXPECT_EQ(sub->GetLength(), 2);
+    EXPECT_EQ(sub->GetLength(), 3);
     EXPECT_EQ(sub->Get(0), data[1]);
     EXPECT_EQ(sub->Get(1), data[2]);
+    EXPECT_EQ(sub->Get(2), data[3]);
     delete sub;
     if (testing::Test::HasFailure()) {
         std::cerr << "\nТестируем GetSubsequence (1,3).\n";
-        std::cerr << "Ожидалось: " << data[1] << " " << data[2] << "\n";
+        std::cerr << "Ожидалось: " << data[1] << " " << data[2] << " " << data[3] << "\n";
         if (sub) {
             std::cerr << "Получено: ";
             for (size_t i = 0; i < sub->GetLength(); ++i)
@@ -219,6 +220,35 @@ TEST_F(ArraySeqFixture, get_subsequence_invalid) {
     EXPECT_THROW(seq_int->GetSubsequence(2, 1), OutOfRangeException);
     EXPECT_THROW(seq_int->GetSubsequence(0, 5), OutOfRangeException);
     EXPECT_THROW(seq_int->GetSubsequence(4, 5), OutOfRangeException);
+    EXPECT_THROW(seq_int->GetSubsequence(1, 4), OutOfRangeException);
+}
+
+TEST_F(ArraySeqFixture, operator_brackets_valid) {
+    for (size_t i = 0; i < 4; ++i) {
+        EXPECT_EQ((*seq_int)[i], data[i]);
+    }
+    if (testing::Test::HasFailure()) {
+        std::cerr << "\nТестируем operator[] (корректные индексы).\n";
+        std::cerr << "Ожидаемая последовательность: ";
+        for (int i = 0; i < 4; ++i) std::cerr << data[i] << " ";
+        std::cerr << "\nПолученная: ";
+        for (size_t i = 0; i < 4; ++i) std::cerr << (*seq_int)[i] << " ";
+        std::cerr << "\n\n";
+    }
+}
+
+TEST_F(ArraySeqFixture, operator_brackets_out_of_range) {
+    EXPECT_THROW((*seq_int)[10], OutOfRangeException);
+    EXPECT_THROW((*seq_int)[4], OutOfRangeException);
+}
+
+TEST_F(ArraySeqFixture, get_count) {
+    EXPECT_EQ(seq_int->GetCount(), seq_int->GetLength());
+    EXPECT_EQ(seq_int->GetCount(), 4);
+    if (testing::Test::HasFailure()) {
+        std::cerr << "\nТестируем ICollection::GetCount.\n";
+        std::cerr << "Ожидалось 4, получено " << seq_int->GetCount() << "\n\n";
+    }
 }
 
 TEST_F(ArraySeqFixture, concat) {

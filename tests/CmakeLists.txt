@@ -8,6 +8,7 @@ add_executable(lab_tests
     test_list_sequence.cpp
     test_bit.cpp
     test_bit_sequence.cpp
+    test_algorithms.cpp
     test_main.cpp
 )
 

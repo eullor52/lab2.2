@@ -4,7 +4,15 @@
 #include <stdexcept>
 
 template <typename T>
-class Sequence {
+class ICollection {
+public:
+    virtual ~ICollection() = default;
+    virtual T Get(size_t index) const = 0;
+    virtual size_t GetCount() const = 0;
+};
+
+template <typename T>
+class Sequence : public ICollection<T> {
 public:
     class IEnumerator {
     public:
@@ -55,4 +63,7 @@ public:
     virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
     virtual Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const = 0;
     virtual Sequence<T>* Concat(const Sequence<T>& other) = 0;
+
+    size_t GetCount() const override { return GetLength(); }
+    T operator[](size_t index) const { return Get(index); }
 };

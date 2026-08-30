@@ -22,6 +22,9 @@ template <typename T>
 T sum_func(T acc, T x) { return acc + x; }
 
 template <typename T>
+T add_index(T x, size_t idx) { return x + static_cast<T>(idx); }
+
+template <typename T>
 T MainWindow::parseVal(const QString& str) {
     if constexpr (std::is_same_v<T, int>)
         return str.toInt();
@@ -223,6 +226,13 @@ void MainWindow::updateOperations() {
         comboOperation->addItem("Map (x * 2)", 14);
         comboOperation->addItem("Reduce (sum)", 15);
         comboOperation->addItem("Where (x > 60)", 16);
+        comboOperation->addItem("MapIndexed (x + index)", 17);
+        comboOperation->addItem("MinMaxAvg", 18);
+        comboOperation->addItem("MovingAvg3 ((a[i-1]+a[i]+a[i+1])/3)", 19);
+        comboOperation->addItem("ReflectSum (a[i] + a[n-1-i])", 20);
+        comboOperation->addItem("Prefixes", 21);
+        comboOperation->addItem("Postfixes", 22);
+        comboOperation->addItem("operator[] (index)", 23);
     }
     comboOperation->blockSignals(false);
     onOperationChanged();
@@ -242,7 +252,7 @@ void MainWindow::onOperationChanged() {
     int op = comboOperation->currentData().toInt();
     groupSeqB->setVisible(op == 8 || op == 10 || op == 11 || op == 12);
     bool showVal = (op == 5 || op == 6 || op == 7);
-    bool showIdx = (op == 2 || op == 7);
+    bool showIdx = (op == 2 || op == 7 || op == 23);
     bool showBounds = (op == 4);
     lineValue->setVisible(showVal);
     labelValue->setVisible(showVal);
@@ -323,6 +333,70 @@ void MainWindow::executeStandard() {
         auto* filtered = Where<T>(*seqA, is_big<T>);
         res = formatSeq<T>(filtered);
         delete filtered;
+        break;
+    }
+    case 17: {
+        auto* mapped = MapIndexed<T>(*seqA, add_index<T>);
+        res = formatSeq<T>(mapped);
+        delete mapped;
+        break;
+    }
+    case 18: {
+        auto stats = ComputeMinMaxAvg<T>(*seqA);
+        QString minStr, maxStr;
+        if constexpr (std::is_same_v<T, double>) {
+            minStr = QString::number(stats.min, 'f', 4);
+            maxStr = QString::number(stats.max, 'f', 4);
+        } else {
+            minStr = QString::number(stats.min);
+            maxStr = QString::number(stats.max);
+        }
+        res = QString("min=%1 max=%2 avg=%3")
+                  .arg(minStr).arg(maxStr).arg(QString::number(stats.avg, 'f', 4));
+        break;
+    }
+    case 19: {
+        auto* avg3 = MovingAverage3<T>(*seqA);
+        res = formatSeq<double>(avg3);
+        delete avg3;
+        break;
+    }
+    case 20: {
+        auto* reflected = ReflectSum<T>(*seqA);
+        res = formatSeq<T>(reflected);
+        delete reflected;
+        break;
+    }
+    case 21: {
+        auto* prefixes = Prefixes<T>(*seqA);
+        QStringList lines;
+        for (size_t i = 0; i < prefixes->GetLength(); ++i) {
+            Sequence<T>* p = prefixes->Get(i);
+            lines << formatSeq<T>(p);
+            delete p;
+        }
+        delete prefixes;
+        res = lines.join("\n");
+        break;
+    }
+    case 22: {
+        auto* postfixes = Postfixes<T>(*seqA);
+        QStringList lines;
+        for (size_t i = 0; i < postfixes->GetLength(); ++i) {
+            Sequence<T>* p = postfixes->Get(i);
+            lines << formatSeq<T>(p);
+            delete p;
+        }
+        delete postfixes;
+        res = lines.join("\n");
+        break;
+    }
+    case 23: {
+        T val = (*seqA)[lineIndex->text().toULongLong()];
+        if constexpr (std::is_same_v<T, double>)
+            res = QString::number(val, 'f', 4);
+        else
+            res = QString::number(val);
         break;
     }
     default:

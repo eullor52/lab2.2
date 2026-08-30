@@ -173,12 +173,12 @@ ArraySequence<T>* ArraySequence<T>::InsertAt(T item, size_t index) {
 template <typename T>
 Sequence<T>* ArraySequence<T>::GetSubsequence(size_t startIndex, size_t endIndex) const {
     size_t len = array->GetSize();
-    if (startIndex > endIndex || startIndex >= len || endIndex > len)
+    if (startIndex > endIndex || startIndex >= len || endIndex >= len)
         throw OutOfRangeException("GetSubsequence: invalid indices");
-    size_t newSize = endIndex - startIndex;
+    size_t newSize = endIndex - startIndex + 1;
     ArraySequence<T>* result = this->EmptyClone();
     result->array->Resize(newSize);
-    for (size_t i = startIndex, p = 0; i < endIndex; ++i, ++p)
+    for (size_t i = startIndex, p = 0; i <= endIndex; ++i, ++p)
         result->array->Set(p, array->Get(i));
     return result;
 }

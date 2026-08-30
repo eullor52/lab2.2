@@ -350,6 +350,38 @@ TEST_F(ListSequenceFixture, immutable_insert_at) {
     }
 }
 
+TEST_F(ListSequenceFixture, operator_brackets_valid) {
+    for (size_t i = 0; i < 6; ++i) {
+        EXPECT_EQ((*list_seq_int)[i], list_data_int[i]);
+    }
+    if (testing::Test::HasFailure()) {
+        std::cerr << "\nТестируем operator[] (корректные индексы).\n";
+        std::cerr << "Ожидаемая последовательность: ";
+        for (int i = 0; i < 6; ++i) std::cerr << list_data_int[i] << " ";
+        std::cerr << "\nПолученная: ";
+        for (size_t i = 0; i < 6; ++i) std::cerr << (*list_seq_int)[i] << " ";
+        std::cerr << "\n\n";
+    }
+}
+
+TEST_F(ListSequenceFixture, operator_brackets_out_of_range) {
+    EXPECT_THROW((*list_seq_int)[6], OutOfRangeException);
+    EXPECT_THROW((*list_seq_int)[100], OutOfRangeException);
+}
+
+TEST_F(ListSequenceFixture, get_count) {
+    EXPECT_EQ(list_seq_int->GetCount(), list_seq_int->GetLength());
+    EXPECT_EQ(list_seq_int->GetCount(), 6);
+    if (testing::Test::HasFailure()) {
+        std::cerr << "\nТестируем ICollection::GetCount.\n";
+        std::cerr << "Ожидалось 6, получено " << list_seq_int->GetCount() << "\n\n";
+    }
+}
+
+TEST_F(ListSequenceFixture, get_subsequence_boundary_invalid) {
+    EXPECT_THROW(list_seq_int->GetSubsequence(1, 6), OutOfRangeException);
+}
+
 TEST_F(ListSequenceFixture, map) {
     auto double_func = [](int x) { return x * 2; };
     Sequence<int>* mapped = Map<int, int>(*list_seq_int, double_func);
