@@ -1,36 +1,26 @@
-BUILD_DIR ?= build
-UI_BUILD_DIR = ui
-CMAKE_GENERATOR = MinGW Makefiles
+BUILD_DIR = build
 
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=Debug
-ifdef CMAKE_PREFIX_PATH
-    CMAKE_FLAGS += -DCMAKE_PREFIX_PATH="$(CMAKE_PREFIX_PATH)"
-endif
-ifdef CMAKE_GENERATOR
-    CMAKE_FLAGS += -G "$(CMAKE_GENERATOR)"
-endif
+configure:
+	cmake -S . -B $(BUILD_DIR) -G "MinGW Makefiles"
 
-$(BUILD_DIR)/CMakeCache.txt: CMakeLists.txt
-	cmake -S . -B $(BUILD_DIR) $(CMAKE_FLAGS)
-
-all: $(BUILD_DIR)/CMakeCache.txt
+all: configure
 	cmake --build $(BUILD_DIR)
 
-ui: $(BUILD_DIR)/CMakeCache.txt
-	cmake --build $(BUILD_DIR) --target ui
-
-tests: $(BUILD_DIR)/CMakeCache.txt
-	cmake --build $(BUILD_DIR) --target run_tests
+tests: configure
+	cmake --build $(BUILD_DIR) --target lab_tests
 
 run_tests: tests
 	cd $(BUILD_DIR) &&  ctest --output-on-failure GTEST_BRIEF=1
 
+ui: configure
+	cmake --build $(BUILD_DIR) --target lab_ui
+
 run_ui: ui
-	./$(BUILD_DIR)/$(UI_BUILD_DIR)/ui.exe
+	$(BUILD_DIR)\ui\lab_ui.exe
 
 clean:
-	rd /s /q $(BUILD_DIR)
+	rmdir /S /Q $(BUILD_DIR)
 
-.DEFAULT_GOAL := all
+rebuild: clean all
 
-.PHONY: all ui tests run_tests run_ui clean
+.PHONY: all tests run_tests ui run_ui clean rebuild
